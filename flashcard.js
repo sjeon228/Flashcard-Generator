@@ -1,12 +1,13 @@
 var BasicCard = require("./BasicCard");
-//var ClozeCard = require("./ClozeCard");
+var ClozeCard = require("./ClozeCard");
 var inquirer = require("inquirer");
 var basicResponse;
-var frontCount = 0;
-var backCount = 0;
+var Count = 0;
+
 
 
 function mainMenu(){
+	console.log("--------------------------------------------------------------");
 	inquirer.prompt([
 	{
 		type: "list",
@@ -39,7 +40,7 @@ function basicFlash(){
 
 	function basicApp(){
 		console.log("--------------------------------------------------------------");
-		console.log(basicArr[frontCount].front);
+		console.log(basicArr[Count].front);
 			inquirer.prompt([
 			{
 				type: "list",
@@ -48,22 +49,109 @@ function basicFlash(){
 				name: "flip"
 			}
 			]).then(function(userResponse){
-					console.log(basicArr[backCount].back);
-					frontCount++;
-					backCount++;
-					if (frontCount < basicArr.length){
-						basicApp();
+					console.log(basicArr[Count].back);
+					console.log("--------------------------------------------------------------");
+					Count++;
+					if (Count < basicArr.length){
+						inquirer.prompt([
+						{
+							type: "list",
+							message: "Next Card?",
+							choices: ["Yes", "Main Menu"],
+							name: "next"
+						}
+						]).then(function(userResponse){
+							switch(userResponse.next){
+								case "Yes":
+									basicApp();
+									break;
+								case "Main Menu":
+									mainMenu();
+									Count = 0;
+									break;
+							}
+						});
 					}
 					else{
+						console.log("--------------------------------------------------------------");
 						console.log("You have completed the basic flashcards!");
 						console.log("--------------------------------------------------------------");
-						frontCount = 0;
-						backCount = 0;
+						Count = 0;
 						mainMenu();
 					}
 			});
 		
 	};
+};
+
+function clozeFlash(){
+	var clozeArr = [
+	new ClozeCard("Ray Allen", " has made the most 3 pointers in NBA history."),
+	new ClozeCard("Wilt Chamberlain", " has scored the most points in a game in NBA history."),
+	new ClozeCard("The Golden State Warriors", " won the 2017 NBA championship."),
+	new ClozeCard("Jerry West", " is the man portrayed in the NBA logo."),
+	new ClozeCard("Russel Westbrook", " won the 2017 NBA MVP award.")
+	];
+	clozeApp();
+
+	function clozeApp(){
+		console.log("--------------------------------------------------------------");
+		console.log("..." + clozeArr[Count].partial);
+			inquirer.prompt([
+			{
+				type: "list",
+				message: "Flip the card?",
+				choices: ["Yes"],
+				name: "flip"
+			}
+			]).then(function(userResponse){
+					console.log(clozeArr[Count].cloze);
+					console.log("--------------------------------------------------------------");
+					
+			inquirer.prompt([
+			{
+				type: "list",
+				message: "Show the completed sentence?",
+				choices: ["Yes"],
+				name: "completed"
+			}
+			]).then(function(userResponse){
+					console.log(clozeArr[Count].fulltext);
+					console.log("--------------------------------------------------------------");
+					Count++;
+
+					if (Count < clozeArr.length){
+						inquirer.prompt([
+						{
+							type: "list",
+							message: "Next Card?",
+							choices: ["Yes", "Main Menu"],
+							name: "next"
+						}
+						]).then(function(userResponse){
+							switch(userResponse.next){
+								case "Yes":
+									clozeApp();
+									break;
+								case "Main Menu":
+									mainMenu();
+									Count = 0;
+									break;
+							}
+						});
+
+					}
+					else{
+						console.log("--------------------------------------------------------------");
+						console.log("You have completed the cloze deleted flashcards!");
+						console.log("--------------------------------------------------------------");
+						Count = 0;
+						mainMenu();
+					}
+			});
+		});
+	}
+
 };
 
 mainMenu();

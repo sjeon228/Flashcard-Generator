@@ -2,14 +2,6 @@
 function BasicCard (front, back){
 	this.front = front;
 	this.back = back;
-	this.displayFront = function(){
-		console.log(basicArr[frontCount].front);
-		
-	};
-	this.displayBack = function(){
-		console.log(basicArr[backCount].back);
-		
-	}
 };
 
 
